@@ -42,6 +42,7 @@ MString *pgraph_gen_vsh_glsl(const ShaderState *state, bool prefix_outputs)
         "%svec4 clipRange;\n"
         "%svec2 surfaceSize;\n"
         "%svec4 c[" stringify(NV2A_VERTEXSHADER_CONSTANTS) "];\n"
+        "%svec2 surfaceScale = vec2(surfaceSize.x / 720.0, surfaceSize.y / 480.0);\n"
         "%svec2 fogParam;\n",
         u, u, u, u
         );
@@ -91,7 +92,8 @@ MString *pgraph_gen_vsh_glsl(const ShaderState *state, bool prefix_outputs)
         // fractional part and to convert floating-point coordinates by
         // by truncating (not flooring).
         "vec2 roundScreenCoords(vec2 pos) {\n"
-        "  return trunc(pos * 16.0f) / 16.0f;\n"
+        "  float size = (16.0f * surfaceScale);\n"
+        "  return trunc(pos * size) / size;\n"
         "}\n");
 
     pgraph_get_glsl_vtx_header(header, state->vulkan, state->smooth_shading,
